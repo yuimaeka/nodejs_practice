@@ -7,8 +7,12 @@ var app = express()
 
 // appにミドルウェアを設定(様々なミドルウェアを追加し、Webアプリを作成)
 // 応答用メソッドres.sendやres.render
-app.use(function(req, res, next){
+app.get("/",function(req, res, next){
     return res.send('Hello World');
+});
+
+app.get("/hoge",function(req, res, next){
+    return res.send('Hoge');
 });
 
 //Node.jsで定義したhttpサーバーにappを設置
