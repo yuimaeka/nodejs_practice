@@ -1,7 +1,20 @@
 // Node.jsの標準ライブラリであるhttpとexpressをインポート
 var http = require('http');
 var express = require('express');
+// パスの指定に必要
 var path = require('path');
+
+// mongooseを利用可能にする
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/chatapp',function(err){
+    if(err){
+        console.error(err);
+    }else{
+        console.log("successfully connected to MongoDB.")
+    }
+});
+
 
 // Expressのインスタンスであるapp
 var app = express()
