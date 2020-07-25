@@ -1,3 +1,5 @@
+"use strict";
+
 // Node.jsの標準ライブラリであるhttpとexpressをインポート
 var http = require('http');
 var express = require('express');
@@ -7,19 +9,25 @@ var path = require('path');
 // mongooseを利用可能にする
 var mongoose = require('mongoose');
 
+// スキーマをインポートする
+var Message = require('./schema/Message');
+
+// Expressのインスタンスであるapp
+var app = express();
+
+// mongooseに接続
 mongoose.connect('mongodb://localhost:27017/chatapp',function(err){
     if(err){
         console.error(err);
     }else{
-        console.log("successfully connected to MongoDB.")
+        console.log("successfully connected to MongoDB.");
     }
 });
 
+//POSTを受け取るため、body-parserをミドルウェアとして導入
+app.use(bodyparser())
 
-// Expressのインスタンスであるapp
-var app = express()
-
-//pugテンプレートエンジンとして設定
+//pugをテンプレートエンジンとして設定
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','pug');
 
@@ -30,9 +38,25 @@ app.get("/",function(req, res, next){
     return res.render('index',{title:'Hello World'});
 });
 
-app.get("/hoge",function(req, res, next){
-    return res.send('Hoge');
+app.get("/update",function(req, res, next){
+    return res.render('update');
 });
+
+app.post("/update",function(req, res, next){
+
+    //スキーマにデータを格納するためのインスタンスを作成
+    var newMessage = new Message({
+        username: req.body.username,
+        message: req.body.message
+    });
+
+    //エラーが発生した際にホーム画面にリダイレクト
+    newMessage.save((err)=>{
+        if(err) throw err;
+        return res.redirect("/");
+    });
+});
+
 
 //Node.jsで定義したhttpサーバーにappを設置
 var server = http.createServer(app);
