@@ -40,7 +40,10 @@ app.set('view engine','pug');
 app.get("/",function(req, res, next){
     Message.find({},function(err,msgs){
         if(err) throw err;
-        return res.render('index',{messages:msgs});
+        return res.render('index',
+            {
+                messages:msgs
+            });
     });
 });
 
