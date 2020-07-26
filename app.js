@@ -6,6 +6,9 @@ var express = require('express');
 // パスの指定に必要
 var path = require('path');
 
+//POSTを受け取るためのbody-parser
+var bodyparser = require('body-parser');
+
 // mongooseを利用可能にする
 var mongoose = require('mongoose');
 
@@ -34,8 +37,12 @@ app.set('view engine','pug');
 
 // appにミドルウェアを設定(様々なミドルウェアを追加し、Webアプリを作成)
 // 応答用メソッドres.sendやres.render(テンプレートエンジンを使う場合はこっち)
+// MongoDB内のデータを参照する為のfind
 app.get("/",function(req, res, next){
-    return res.render('index',{title:'Hello World'});
+    Message.find({},function(err,msgs){
+        if(err) throw err;
+        return res.render('index',{messages:msgs});
+    });
 });
 
 app.get("/update",function(req, res, next){
